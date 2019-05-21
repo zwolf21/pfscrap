@@ -1,4 +1,4 @@
-mapping = {
+RW_FUNDINFO_MAPPING = {
     "forgcode" : '표준코드',
     "fmngcomcd" : '운용회사',
     "fundnm" : '펀드명',
