@@ -1,10 +1,10 @@
-import os
+import os, sys
 import argparse
 
-from pfscrap.argparser.kofia import set_kofia_argparser, parse_kofia_args
-
-
 import pandas as pd
+
+import settings.environments
+from pfscrap.argparser.kofia import set_kofia_argparser, parse_kofia_args
 
 
 def main():

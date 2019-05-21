@@ -22,3 +22,4 @@ im/
 *.xls*
 *.ipynb
 settings/
+db.py
