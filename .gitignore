@@ -23,3 +23,4 @@ im/
 *.ipynb
 settings/
 db.py
+PROFP_DATABASE_CONNECTION_INFO.csv

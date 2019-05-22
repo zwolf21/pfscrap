@@ -2,7 +2,6 @@ def set_kofia_argparser(argparser):
     argparser.add_argument(
         'keywords',
         help='스크랩분야 지정(ls-펀드리스트, ls-al-펀드리스트자세히, cat-펀드정보, pg-가격변동추이, ex-결산및상환)',
-
         nargs='+'
     )
     argparser.add_argument(
@@ -32,8 +31,9 @@ def set_kofia_argparser(argparser):
     )
     argparser.add_argument(
         '-o', '--output',
-        help='결과물 출력파일 형식지정',
+        help='결과물 출력파일 형식지정("csv", "xlsx", Path of the DB Connection info file)',
         nargs='?',
         default='print',
         type=str,
     )
+

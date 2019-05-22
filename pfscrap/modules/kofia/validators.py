@@ -1,4 +1,4 @@
-from .columns import FUND_LIST_COLUMNS, FUND_DETAIL_COLUMNS
+from .scrap_column_mappings import FUND_LIST_COLUMNS, FUND_DETAIL_COLUMNS
 
 
 def validate_fund_list(df_fund_list):
