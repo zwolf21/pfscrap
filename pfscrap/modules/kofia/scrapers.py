@@ -15,7 +15,7 @@ from pfscrap.utils.soup_parser import parse_xml_table_tag
 
 class KofiaScraper(LinkRelayScraper):
     CACHE_NAME = 'PROFP_SCRAP_CACHE'
-    REQUEST_DELAY = 1, 2
+    REQUEST_DELAY = 0
 
 
 class KofiaFundListScraper(KofiaScraper):

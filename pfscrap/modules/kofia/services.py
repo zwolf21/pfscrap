@@ -6,13 +6,20 @@ from .scrapers import (
     KofiaPriceProgressScraper,
     KofiaSettleExSoScraper
 )
+from pfscrap.utils.date_str import gen_date_range, get_today_str_date
+from pfscrap.lib.orm import DBOrm
+
+DATERANGE_SLICE_INTERVAL_YEAR = 1
 
 
-def get_kofia_fund_list(start_date, end_date):
-    kflist = KofiaFundListScraper()
-    r = kflist.scrap(start_date=start_date, end_date=end_date)
-    df = pd.DataFrame(r['fund_list'])
-    return df
+def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR):
+    dfs = []
+    for start_date, end_date in gen_date_range(start_date, end_date, interval=interval):
+        kflist = KofiaFundListScraper()
+        r = kflist.scrap(start_date=start_date, end_date=end_date)
+        df = pd.DataFrame(r['fund_list'])
+        dfs.append(df)
+    return pd.concat(dfs, ignore_index=True)
 
 
 def get_kofia_fund_detail(fund_std_code, **kwargs):
@@ -24,19 +31,26 @@ def get_kofia_fund_detail(fund_std_code, **kwargs):
     return df_detail
 
 
-def apply_fund_list(df_fund_list, apply, merge_on=None):
+def get_kofia_fund_list_detail(start_date, end_date):
+    df_fund_list = get_kofia_fund_list(start_date, end_date)
+    df_fund_list_detail = apply_fund_list(
+        df_fund_list, get_kofia_fund_detail,
+        merge_on='표준코드'
+    )
+    return df_fund_list_detail
+
+
+def apply_fund_list(df_fund_list, apply, merge_on=None, initial_date=None):
     columns = df_fund_list.columns
     dfs = []
     if '표준코드' not in columns:
         raise ValueError('The Column name of 표준코드 not found')
-    # elif '회사코드' in columns and '설정일' in columns:
-    #     for fund_std_code, company_code, initial_date in df_fund_list[['표준코드', '회사코드', '설정일']].values:
-    elif '설정일' in columns:
-        for fund_std_code, initial_date in df_fund_list[['표준코드', '설정일']].values:
+    elif '회사코드' in columns and '설정일' in columns:
+        for fund_std_code, company_code, ini_date in df_fund_list[['표준코드', '회사코드', '설정일']].values:
             df = apply(
                 fund_std_code,
-                # company_code=company_code,
-                initial_date=initial_date
+                company_code=company_code,
+                initial_date=initial_date or ini_date
             )
             dfs.append(df)
     else:
@@ -67,6 +81,14 @@ def get_kofia_fund_price_progress(fund_std_code, company_code=None, initial_date
     return df
 
 
+def get_kofia_fund_price_progress_by_fund_list(df_fund_list, initial_date=None, **kwargs):
+    df_progress = apply_fund_list(
+        df_fund_list, get_kofia_fund_price_progress,
+        initial_date=initial_date
+    )
+    return df_progress
+
+
 def get_kofia_fund_settle_exso(fund_std_code, company_code=None, **kwargs):
     if company_code is None:
         company_code = ''
@@ -78,3 +100,17 @@ def get_kofia_fund_settle_exso(fund_std_code, company_code=None, **kwargs):
     records = r['fund_exso']
     df = pd.DataFrame(records)
     return df
+
+
+def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
+    df_settle_exso = apply_fund_list(df_fund_list, get_kofia_fund_settle_exso)
+    return df_settle_exso
+
+
+def insert_db_table_kofia_fund_list(df_fund_list, table_name, **db_connect_info):
+    db = DBOrm(**db_connect_info)
+    df_table = db.get_df(
+        table_name,
+        columns=['forgcode', 'setupymd', 'companycd']
+    )
+    start_date = df['setupymd'].min()

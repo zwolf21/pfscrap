@@ -1,8 +1,6 @@
 import pandas as pd
 import pymysql
 
-from pfscrap.settings.db import DB_CON_KWARGS
-
 
 class DBOrm:
 
