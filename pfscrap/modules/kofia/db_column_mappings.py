@@ -35,6 +35,10 @@ RW_FUNDINFO_MAPPING = {
     '회사코드': "companycd",
     '설정원본': "uoriginalamt",
     '순자산총액': "netasstotamt",
+    '스크랩여부': "_scrapyn",
+    '상환여부': "_retyn",
+    'created': "reg_date",
+    'updated': "mod_date",
 }
 
 RW_FUNDINDEX_MAPPING = {
@@ -49,6 +53,8 @@ RW_FUNDINDEX_MAPPING = {
     'KOSDAQ': 'kosdaqepn',
     '국공채(3년만기)': 'tbondbnd3y',
     '회사채(3년만기)': 'companybnd3y',
+    'created': "reg_date",
+    'updated': "mod_date",
 }
 
 RW_FUNDSETTLE_MAPPING = {
@@ -60,4 +66,6 @@ RW_FUNDSETTLE_MAPPING = {
     '과표':  'standardasscot',
     '설정원본': 'uoriginalamt',
     '결산': 'vsettlegbnm',
+    'created': "reg_date",
+    'updated': "mod_date",
 }
