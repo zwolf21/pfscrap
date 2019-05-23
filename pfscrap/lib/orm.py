@@ -1,6 +1,8 @@
 import pandas as pd
 import pymysql
 
+from sqlalchemy import create_engine
+
 
 class DBOrm:
 
@@ -10,8 +12,18 @@ class DBOrm:
                 kwargs[k] = int(v)
             else:
                 kwargs[k] = str(v)
+        con_str = "mysql+pymysql://{user}:{passwd}@{host}:{port}/{db}?charset={charset}".format(
+            **kwargs)
+        engin = create_engine(con_str, encoding='utf-8')
+        self.con = engin.connect()
 
-        self.con = pymysql.connect(**kwargs)
+    def _get_now(self):
+        return pd.Timestamp.now()
+
+    def insert_db(self, df, table, if_exists='append', column_mapping=None):
+        if column_mapping:
+            df = df.rename(columns=column_mapping)
+        df.to_sql(table, self.con, if_exists=if_exists, index=False)
 
     def get_df(self, table, where=None, columns=None):
         cols = '*'

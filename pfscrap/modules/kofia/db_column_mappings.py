@@ -1,6 +1,6 @@
 RW_FUNDINFO = {
     '표준코드': "forgcode",
-    '운용회사': "fmngcomcd",
+    '회사': "fmngcomcd",
     '펀드명': "fundnm",
     '설정일': "setupymd",
     '펀드유형': "fundtype",

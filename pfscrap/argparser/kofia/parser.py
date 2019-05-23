@@ -11,6 +11,7 @@ from pfscrap.modules.kofia import (
     get_kofia_fund_list_detail,
     get_kofia_fund_price_progress_by_fund_list,
     get_kofia_fund_settle_exso_by_fund_list,
+    insert_db_table_kofia_fund_list,
 
     validate_fund_list,
 )
@@ -58,6 +59,7 @@ def parse_kofia_args(args):
                 FUND_LIST_DETAIL_PREFIX, start_date, end_date
             )
 
+
     if root in ['pg', 'ex']:
         if root == 'pg':
             apply = get_kofia_fund_price_progress_by_fund_list
@@ -99,6 +101,5 @@ def parse_kofia_args(args):
             raise ValueError("-o 'xlsx', 'csv', or DB_CONNECTION_FILE_PATH")
 
         db_connection_kwargs = dict(path2df(args.output).loc[0].to_dict())
-        db = DBOrm(**db_connection_kwargs)
-        exist_pk = db.get_df()['ID']
-        df = df_fund_list[df_fund_list['ID'].notin(exist_pk)]
+        insert_db_table_kofia_fund_list(df, 'RW_FUNDINFO', **db_connection_kwargs)
+        
