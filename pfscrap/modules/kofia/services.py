@@ -6,6 +6,7 @@ from .scrapers import (
     KofiaPriceProgressScraper,
     KofiaSettleExSoScraper
 )
+from .db_column_mappings import RW_FUNDINFO_MAPPING, RW_FUNDINDEX_MAPPING, RW_FUNDSETTLE_MAPPING
 from pfscrap.utils.date_str import gen_date_range, get_today_str_date
 from pfscrap.lib.orm import DBOrm
 
@@ -107,10 +108,10 @@ def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
     return df_settle_exso
 
 
-def insert_db_table_kofia_fund_list(df_fund_list, table_name, **db_connect_info):
+def insert_db_table_kofia_fund_list(df_fund_list, table_name, mapping=RW_FUNDINFO_MAPPING, **db_connect_info):
     db = DBOrm(**db_connect_info)
     df_table = db.get_df(
         table_name,
-        columns=['forgcode', 'setupymd', 'companycd']
+        columns=[mapping['표준코드'], mapping['설정일'], mapping['회사코드']]
     )
-    start_date = df['setupymd'].min()
+    start_date = df[mapping['설정일']].min()
