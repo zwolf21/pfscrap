@@ -36,4 +36,10 @@ def set_kofia_argparser(argparser):
         default='print',
         type=str,
     )
+    argparser.add_argument(
+        '-i', '--insert',
+        help='MySQL DB connection 정보 들어있는 파일지정',
+        nargs ='?',
+        type=str
+    )
 

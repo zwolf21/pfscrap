@@ -13,6 +13,7 @@ from pfscrap.lib.orm import DBOrm
 
 FIRST_INITIAL_DATE = '19900101'
 DATERANGE_SLICE_INTERVAL_YEAR = 1
+FUNDINFO_TABLE_NAME = 'RW_FUNDINFO'
 
 
 def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR):
@@ -95,9 +96,6 @@ def get_kofia_fund_price_progress_by_fund_list(df_fund_list, initial_date=None, 
 def get_kofia_fund_settle_exso(fund_std_code, company_code=None, **kwargs):
     if company_code is None:
         company_code = ''
-        # fund_df = get_kofia_fund_detail(fund_std_code)
-        # fund = fund_df.iloc[0]
-        # company_code = fund['회사코드']
     kfexso = KofiaSettleExSoScraper()
     r = kfexso.scrap(fund_std_code=fund_std_code, company_code=company_code)
     records = r['fund_exso']
@@ -110,20 +108,29 @@ def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
     return df_settle_exso
 
 
-def insert_db_table_kofia_fund_list(df_fund_list, table_name, mapping=RW_FUNDINFO, **db_connect_info):
+def insert_db_table_kofia_fund_list(df_fund_list, table_name=FUNDINFO_TABLE_NAME, start_date=None, end_date=None, mapping=RW_FUNDINFO, **db_connect_info):
     db = DBOrm(**db_connect_info)
     df_table = db.get_df(
         table_name,
-        columns=[mapping['표준코드'], mapping['설정일'], mapping['회사코드']]
+        columns=[mapping['표준코드'], mapping['설정일']]
     )
     df_table = df_table[df_table[mapping['설정일']].notnull()]
-    if df_table.shape[0] == 0:
-        start_date = FIRST_INITIAL_DATE
-    else:
-        start_date = df_table[mapping['설정일']].max()
 
-    end_date = get_today_str_date()
-    print(start_date, end_date)
+    if start_date is None:
+        if df_table.shape[0] == 0:
+            start_date = FIRST_INITIAL_DATE
+        else:
+            start_date = df_table[mapping['설정일']].max()
+
+    end_date = end_date or get_today_str_date()
     exists_std_code = df_table[mapping['표준코드']]
     df = df_fund_list[~df_fund_list['표준코드'].isin(exists_std_code)]
-    db.insert_db(df, table_name, column_mapping=mapping)
+    db.insert_db(
+        df, table_name,
+        column_mapping=mapping,
+        created=mapping.get('created'),
+        updated=mapping.get('updated')
+    )
+
+def insert_db_table_kofia_price_change():
+    pass

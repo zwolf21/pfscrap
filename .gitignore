@@ -21,6 +21,7 @@ im/
 *.csv
 *.xls*
 *.ipynb
+*.json
 settings/
 db.py
 PROFP_DATABASE_CONNECTION_INFO.csv

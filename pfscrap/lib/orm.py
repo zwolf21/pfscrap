@@ -1,5 +1,6 @@
 import pandas as pd
 import pymysql
+import sqlite3
 
 from sqlalchemy import create_engine
 
@@ -7,22 +8,29 @@ from sqlalchemy import create_engine
 class DBOrm:
 
     def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            if k.lower() in ['port']:
-                kwargs[k] = int(v)
-            else:
-                kwargs[k] = str(v)
-        con_str = "mysql+pymysql://{user}:{passwd}@{host}:{port}/{db}?charset={charset}".format(
-            **kwargs)
-        engin = create_engine(con_str, encoding='utf-8')
-        self.con = engin.connect()
-
+        self.con = self._get_connection(**kwargs)
+    
+    def _get_connection(self, **kwargs):
+        db_backend = kwargs.get('backend', 'sqlite3')
+        if db_backend == 'sqlite3':
+            con = sqlite3.connect(**kwargs)
+        elif db_backend == 'mysql':
+            con_str_fmt = "mysql+pymysql://{user}:{passwd}@{host}:{port}/{db}?charset={charset}"
+            con_str = con_str_fmt.format(**kwargs)
+            engin = create_engine(con_str, encoding='utf-8')
+            con = engin.connect()
+        return con
+        
     def _get_now(self):
         return pd.Timestamp.now()
 
-    def insert_db(self, df, table, if_exists='append', column_mapping=None):
-        if column_mapping:
+    def insert_db(self, df, table, if_exists='append', column_mapping=None, updated=None, created=None):
+        if column_mapping is not None:
             df = df.rename(columns=column_mapping)
+        if created is not None:
+            df[created] = self._get_now()
+        if updated is not None:
+            df[updated] = self._get_now()
         df.to_sql(table, self.con, if_exists=if_exists, index=False)
 
     def get_df(self, table, where=None, columns=None):
@@ -44,12 +52,3 @@ class DBOrm:
         count = df_counter.loc[0, 'COUNT(*)']
         return count
 
-
-# orm = DBOrm(**DB_CON_KWARGS)
-
-# count = orm.get_values_count('FM_CLIENT', 'IS_ALIAS', 2)
-# print('****'*50)
-# print('count', count)
-# df = orm.get_df('FM_CLIENT', columns=['ID', 'FP_ID'], where='IS_ALIAS=2')
-# print('****'*50)
-# print('df:', df.shape)
