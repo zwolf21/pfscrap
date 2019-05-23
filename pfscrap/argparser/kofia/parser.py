@@ -8,15 +8,14 @@ from pfscrap.utils.date_str import get_date_ago_range
 
 from pfscrap.modules.kofia import (
     get_kofia_fund_list,
-    get_kofia_fund_detail,
-    get_kofia_fund_price_progress,
-    get_kofia_fund_settle_exso, apply_fund_list,
+    get_kofia_fund_list_detail,
+    get_kofia_fund_price_progress_by_fund_list,
+    get_kofia_fund_settle_exso_by_fund_list,
 
     validate_fund_list,
 )
 
 from pfscrap.lib.orm import DBOrm
-from pfscrap.settings.db import DB_CON_KWARGS
 
 APP_NAME = 'kofia'
 COMMANDS = ['ls', 'ls-al', 'pg', 'ex']
@@ -54,17 +53,17 @@ def parse_kofia_args(args):
         df = get_kofia_fund_list(start_date, end_date)
         output_name = '{}_{}~{}'.format(FUND_LIST_PREFIX, start_date, end_date)
         if root == 'ls-al':
-            df = apply_fund_list(df, get_kofia_fund_detail, merge_on='표준코드')
+            df = get_kofia_fund_list_detail(start_date, end_date)
             output_name = '{}_{}~{}'.format(
                 FUND_LIST_DETAIL_PREFIX, start_date, end_date
             )
 
     if root in ['pg', 'ex']:
         if root == 'pg':
-            apply = get_kofia_fund_price_progress
+            apply = get_kofia_fund_price_progress_by_fund_list
             output_name_postfix = PRICE_PROGRESS_POSTFIX
         else:
-            apply = get_kofia_fund_settle_exso
+            apply = get_kofia_fund_settle_exso_by_fund_list
             output_name_postfix = SETTLE_EXSO_POSTFIX
         if rest:
             keyword = rest[0]
@@ -75,7 +74,7 @@ def parse_kofia_args(args):
                     raise ValueError(
                         'Validation Error: Source File columns is different from FundList or FundDetail signature'
                     )
-                df = apply_fund_list(df_fund_list, apply)
+                df = apply(df_fund_list)
                 output_name = '{}-{}'.format(fn, output_name_postfix)
             else:
                 df = apply(keyword)
@@ -98,9 +97,8 @@ def parse_kofia_args(args):
     else:
         if not is_file(args.output):
             raise ValueError("-o 'xlsx', 'csv', or DB_CONNECTION_FILE_PATH")
+
         db_connection_kwargs = dict(path2df(args.output).loc[0].to_dict())
         db = DBOrm(**db_connection_kwargs)
         exist_pk = db.get_df()['ID']
         df = df_fund_list[df_fund_list['ID'].notin(exist_pk)]
-        
-

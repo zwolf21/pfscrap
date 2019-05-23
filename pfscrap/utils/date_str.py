@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
+from dateutil.parser import parse
+from dateutil.rrule import rrule, MONTHLY, YEARLY
 
 DATESTR_FMT = "%Y%m%d"
 DEFAULT_AGO_DAYS = 7
@@ -37,3 +39,17 @@ def get_date_ago_range(start_date=None, end_date=None, days_ago=None, months_ago
         raise ValueError('start_date > end_date')
     return start_date, end_date
 
+
+def gen_date_range(start_date, end_date, interval=1, fmt=DATESTR_FMT):
+    s, e = parse(start_date), parse(end_date)
+    starts = list(rrule(freq=YEARLY, dtstart=s, until=e, interval=interval))
+    if e not in starts:
+        starts.append(e)
+    for i, s in enumerate(starts):
+        st = starts[i]
+        if i < len(starts) - 1:
+            et = starts[i+1]
+            if i < len(starts) - 2:
+                et -= relativedelta(days=1)
+        if st != et:
+            yield st.strftime(fmt), et.strftime(fmt)
