@@ -1,4 +1,4 @@
-RW_FUNDINFO_MAPPING = {
+RW_FUNDINFO = {
     '표준코드': "forgcode",
     '운용회사': "fmngcomcd",
     '펀드명': "fundnm",
@@ -41,7 +41,7 @@ RW_FUNDINFO_MAPPING = {
     'updated': "mod_date",
 }
 
-RW_FUNDINDEX_MAPPING = {
+RW_FUNDINDEX = {
     '표준코드': 'forgcode',
     '기준일자': 'standarddt',
     '기준가격': 'standardcot',
@@ -57,7 +57,7 @@ RW_FUNDINDEX_MAPPING = {
     'updated': "mod_date",
 }
 
-RW_FUNDSETTLE_MAPPING = {
+RW_FUNDSETTLE = {
     '표준코드': 'forgcode',
     '신탁회계기초': 'trustaccsrt',
     '신탁회계기말': 'trustaccend',
