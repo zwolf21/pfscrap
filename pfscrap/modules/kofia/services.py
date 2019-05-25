@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from .scrapers import (
@@ -6,11 +7,13 @@ from .scrapers import (
     KofiaPriceProgressScraper,
     KofiaSettleExSoScraper
 )
-from .db_column_mappings import RW_FUNDINFO_MAPPING, RW_FUNDINDEX_MAPPING, RW_FUNDSETTLE_MAPPING
-from pfscrap.utils.date_str import gen_date_range, get_today_str_date
+from .db_column_mappings import RW_FUNDINFO, RW_FUNDINDEX, RW_FUNDSETTLE
+from pfscrap.utils.date_str import gen_date_range, get_today_str_date, datetime2str
 from pfscrap.lib.orm import DBOrm
 
+FIRST_INITIAL_DATE = '19900101'
 DATERANGE_SLICE_INTERVAL_YEAR = 1
+FUNDINFO_TABLE_NAME = 'RW_FUNDINFO'
 
 
 def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR):
@@ -105,10 +108,29 @@ def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
     return df_settle_exso
 
 
-def insert_db_table_kofia_fund_list(df_fund_list, table_name, mapping=RW_FUNDINFO_MAPPING, **db_connect_info):
+def insert_db_table_kofia_fund_list(df_fund_list, table_name=FUNDINFO_TABLE_NAME, start_date=None, end_date=None, mapping=RW_FUNDINFO, **db_connect_info):
     db = DBOrm(**db_connect_info)
     df_table = db.get_df(
         table_name,
-        columns=[mapping['표준코드'], mapping['설정일'], mapping['회사코드']]
+        columns=[mapping['표준코드'], mapping['설정일']]
     )
-    start_date = df[mapping['설정일']].min()
+    df_table = df_table[df_table[mapping['설정일']].notnull()]
+
+    if start_date is None:
+        if df_table.shape[0] == 0:
+            start_date = FIRST_INITIAL_DATE
+        else:
+            start_date = df_table[mapping['설정일']].max()
+
+    end_date = end_date or get_today_str_date()
+    exists_std_code = df_table[mapping['표준코드']]
+    df = df_fund_list[~df_fund_list['표준코드'].isin(exists_std_code)]
+    db.insert_db(
+        df, table_name,
+        column_mapping=mapping,
+        created=mapping.get('created'),
+        updated=mapping.get('updated')
+    )
+
+def insert_db_table_kofia_price_change():
+    pass

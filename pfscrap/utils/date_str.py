@@ -7,6 +7,9 @@ from dateutil.rrule import rrule, MONTHLY, YEARLY
 DATESTR_FMT = "%Y%m%d"
 DEFAULT_AGO_DAYS = 7
 
+def datetime2str(datetime, fmt=DATESTR_FMT):
+    return datetime.strftime(fmt)
+
 
 def get_today_str_date(fmt=DATESTR_FMT):
     today = datetime.today()

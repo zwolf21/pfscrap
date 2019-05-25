@@ -1,6 +1,6 @@
-RW_FUNDINFO_MAPPING = {
+RW_FUNDINFO = {
     '표준코드': "forgcode",
-    '운용회사': "fmngcomcd",
+    '회사': "fmngcomcd",
     '펀드명': "fundnm",
     '설정일': "setupymd",
     '펀드유형': "fundtype",
@@ -35,9 +35,13 @@ RW_FUNDINFO_MAPPING = {
     '회사코드': "companycd",
     '설정원본': "uoriginalamt",
     '순자산총액': "netasstotamt",
+    '스크랩여부': "_scrapyn",
+    '상환여부': "_retyn",
+    'created': "reg_date",
+    'updated': "mod_date",
 }
 
-RW_FUNDINDEX_MAPPING = {
+RW_FUNDINDEX = {
     '표준코드': 'forgcode',
     '기준일자': 'standarddt',
     '기준가격': 'standardcot',
@@ -49,9 +53,11 @@ RW_FUNDINDEX_MAPPING = {
     'KOSDAQ': 'kosdaqepn',
     '국공채(3년만기)': 'tbondbnd3y',
     '회사채(3년만기)': 'companybnd3y',
+    'created': "reg_date",
+    'updated': "mod_date",
 }
 
-RW_FUNDSETTLE_MAPPING = {
+RW_FUNDSETTLE = {
     '표준코드': 'forgcode',
     '신탁회계기초': 'trustaccsrt',
     '신탁회계기말': 'trustaccend',
@@ -60,4 +66,6 @@ RW_FUNDSETTLE_MAPPING = {
     '과표':  'standardasscot',
     '설정원본': 'uoriginalamt',
     '결산': 'vsettlegbnm',
+    'created': "reg_date",
+    'updated': "mod_date",
 }

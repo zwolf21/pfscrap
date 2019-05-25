@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from pfscrap.utils.dataframe import path2df
-from pfscrap.utils.files import is_file
+from pfscrap.utils.files import is_file, read_json
 from pfscrap.utils.date_str import get_date_ago_range
 
 from pfscrap.modules.kofia import (
@@ -11,6 +11,7 @@ from pfscrap.modules.kofia import (
     get_kofia_fund_list_detail,
     get_kofia_fund_price_progress_by_fund_list,
     get_kofia_fund_settle_exso_by_fund_list,
+    insert_db_table_kofia_fund_list,
 
     validate_fund_list,
 )
@@ -57,6 +58,14 @@ def parse_kofia_args(args):
             output_name = '{}_{}~{}'.format(
                 FUND_LIST_DETAIL_PREFIX, start_date, end_date
             )
+            if args.output in ['db']:
+                if args.insert:
+                    if not is_file(args.insert):
+                        raise ValueError(
+                            "-o 'xlsx', 'csv', or DB_CONNECTION_FILE_PATH"
+                        )
+                    db_conn_kwargs = read_json(args.insert)
+                    insert_db_table_kofia_fund_list(df, **db_conn_kwargs)
 
     if root in ['pg', 'ex']:
         if root == 'pg':
@@ -94,11 +103,3 @@ def parse_kofia_args(args):
             df.to_csv(output_filename, index=False)
     elif args.output == 'print':
         print(df.head())
-    else:
-        if not is_file(args.output):
-            raise ValueError("-o 'xlsx', 'csv', or DB_CONNECTION_FILE_PATH")
-
-        db_connection_kwargs = dict(path2df(args.output).loc[0].to_dict())
-        db = DBOrm(**db_connection_kwargs)
-        exist_pk = db.get_df()['ID']
-        df = df_fund_list[df_fund_list['ID'].notin(exist_pk)]

@@ -3,3 +3,4 @@ xlrd
 pandas
 scrapgo
 pymysql
+sqlalchemy

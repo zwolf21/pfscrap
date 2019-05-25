@@ -1,4 +1,5 @@
 import os
+import json
 
 
 def is_file(path):
@@ -16,3 +17,8 @@ def guess_input(keyword):
             return ext
     else:
         return keyword
+
+
+def read_json(path):
+    with open(path, encoding='utf-8') as fp:
+        return json.loads(fp.read())
