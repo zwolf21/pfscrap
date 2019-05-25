@@ -1,3 +1,6 @@
+# 스크래핑용 컬럼 매핑
+
+# FUNDINFO TABLE - LIST
 FUND_LIST_COLUMNS = {
     'tmpv1': '회사',
     'tmpv2': '펀드명',
@@ -9,6 +12,7 @@ FUND_LIST_COLUMNS = {
     'tmpv10': '표준코드'
 }
 
+# FUNDINFO TABLE - DETAIL
 FUND_DETAIL_COLUMNS = {
     'vfundgbnm': '구분',
     'ufundtypnm': '상품분류',
@@ -42,6 +46,7 @@ FUND_DETAIL_COLUMNS = {
 
 }
 
+# 지수 테이블
 PRICE_PROGRESS_COLUMNS = {
     'standarddt': '기준일자',
     'standardcot': '기준가격',
@@ -55,6 +60,7 @@ PRICE_PROGRESS_COLUMNS = {
     'companybnd3y': '회사채(3년만기)',
 }
 
+# 결산 및 상환 테이블 - BY 펀드코드
 SETTLE_EXSO_COLUMNS = {
     'trustaccsrt': '신탁회계기초',
     'trustaccend': '신탁회계기말',
@@ -63,4 +69,19 @@ SETTLE_EXSO_COLUMNS = {
     'standardasscot': '과표',
     'uoriginalamt': '설정원본',  # 겹침
     'vsettlegbnm': '결산'
+}
+
+# 결산 및 상환 테이블 - BY DATE RANGE
+SETTLE_EXSO_BY_DATE_COLUMNS = {
+    # 'tmpv1': '회사',
+    # 'tmpv2': '펀드명',
+    'tmpv3': '회계기초',
+    'tmpv4': '회계기말',
+    'tmpv5': '경과일수',
+    'tmpv6': '설정원본',
+    'tmpv7': '기준',
+    'tmpv8': '과표',
+    'tmpv9': '분배율',
+    'tmpv10': '구분',
+    'tmpv11': '표준코드'
 }

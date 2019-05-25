@@ -1,3 +1,6 @@
+# DB INSERT 용 컬럼 매핑
+
+# RW_FUNDINFO TABLE
 RW_FUNDINFO = {
     '표준코드': "forgcode",
     '회사': "fmngcomcd",
@@ -66,6 +69,22 @@ RW_FUNDSETTLE = {
     '과표':  'standardasscot',
     '설정원본': 'uoriginalamt',
     '결산': 'vsettlegbnm',
+    'created': "reg_date",
+    'updated': "mod_date",
+}
+
+RW_FUNDSETTLE_BY_DATE = {
+    '표준코드': 'forgcode',
+    # '회사': "fmngcomcd",
+    # '펀드명': "fundnm",
+    '회계기초': 'trustaccsrt',
+    '회계기말': 'trustaccend',
+    '경과일수': 'vpassdaycnt',
+    '기준':  'standardcot',
+    '과표':  'standardasscot',
+    '설정원본': 'uoriginalamt',
+    '구분': 'vsettlegbnm',
+    '분배율': 'distribrt',
     'created': "reg_date",
     'updated': "mod_date",
 }

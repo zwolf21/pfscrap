@@ -1,24 +1,15 @@
-
-import numpy as np
 import pandas as pd
 
-from .scrapers import (
+from ..scrapers import (
     KofiaFundListScraper,
     KofiaFundInfoScraper,
     KofiaPriceProgressScraper,
     KofiaSettleExSoScraper,
     KofiaSettleExSoByDateScraper
 )
-from .db_column_mappings import RW_FUNDINFO, RW_FUNDINDEX, RW_FUNDSETTLE, RW_FUNDSETTLE_BY_DATE
-from pfscrap.utils.date_str import gen_date_range, get_today_str_date, datetime2str
-from pfscrap.utils.files import guess_input, read_json
-from pfscrap.utils.dataframe import df2path
-from pfscrap.lib.orm import DBOrm
+from pfscrap.utils.date_str import gen_date_range
 
-FIRST_INITIAL_DATE = '19900101'
 DATERANGE_SLICE_INTERVAL_YEAR = 1
-FUNDINFO_TABLE_NAME = 'RW_FUNDINFO'
-FUNDSETTLE_EXSO_TABLE_NAME = 'RW_FUNDSETTLE'
 
 
 def apply_fund_list(df_fund_list, apply, merge_on=None, initial_date=None):
@@ -44,7 +35,7 @@ def apply_fund_list(df_fund_list, apply, merge_on=None, initial_date=None):
     return df_apply
 
 
-def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR):
+def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR, **kwargs):
     dfs = []
     for start_date, end_date in gen_date_range(start_date, end_date, interval=interval):
         kflist = KofiaFundListScraper()
@@ -63,8 +54,7 @@ def get_kofia_fund_detail(fund_std_code, **kwargs):
     return df_detail
 
 
-
-def get_kofia_fund_list_detail(start_date, end_date, output=None):
+def get_kofia_fund_list_detail(start_date, end_date, **kwargs):
     df_fund_list = get_kofia_fund_list(start_date, end_date)
     df_fund_list_detail = apply_fund_list(
         df_fund_list, get_kofia_fund_detail,
@@ -114,25 +104,7 @@ def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
     return df_settle_exso
 
 
-def insert_db_table_kofia_fund_list(table_name=FUNDINFO_TABLE_NAME, start_date=None, end_date=None, mapping=RW_FUNDINFO, **db_connection_info):
-    설정일 = mapping['설정일']
-    표준코드 = mapping['표준코드']
-    db = DBOrm(**db_connection_info)
-    start_date = start_date or db.get_max(table_name, 설정일)
-    end_date = end_date or get_today_str_date()
-    df_fund_list = get_kofia_fund_list_detail(start_date, end_date)
-    df = db.filter_df_not_exists(table_name, df_fund_list, {표준코드: '표준코드'})
-    print('insert_db_table_kofia_fund_list test')
-    print(df)
-    # db.insert_db(
-    #     df, table_name,
-    #     column_mapping=mapping,
-    #     created=mapping.get('created'),
-    #     updated=mapping.get('updated'),
-    # )
-    return df.shape[0]
-
-def get_kofia_settle_exso_by_date(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR):
+def get_kofia_settle_exso_by_date(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR, **kwargs):
     dfs = []
     for start_date, end_date in gen_date_range(start_date, end_date, interval=interval):
         exso = KofiaSettleExSoByDateScraper()
@@ -140,20 +112,3 @@ def get_kofia_settle_exso_by_date(start_date, end_date, interval=DATERANGE_SLICE
         df = pd.DataFrame(r['fund_exso_by_date'])
         dfs.append(df)
     return pd.concat(dfs, ignore_index=True)
-
-
-def insert_db_table_settle_exso_by_date(table_name=FUNDSETTLE_EXSO_TABLE_NAME, start_date=None, end_date=None, mapping=RW_FUNDSETTLE_BY_DATE, **db_connection_info):
-    db = DBOrm(**db_connection_info)
-    회계기말 = mapping['회계기말']
-    start_date = start_date or db.get_max(table_name, 회계기말)
-    end_date = end_date or get_today_str_date()
-    df = get_kofia_settle_exso_by_date(start_date, end_date)
-    print('insert_db_table_settle_exso_by_date test')
-    print(df)
-    # db.insert_db(
-    #     df, table_name,
-    #     column_mapping=mapping,
-    #     created=mapping.get('created'),
-    #     updated=mapping.get('updated')
-    # )
-    return df.shape[0]

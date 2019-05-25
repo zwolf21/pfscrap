@@ -4,8 +4,11 @@ from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from dateutil.rrule import rrule, MONTHLY, YEARLY
 
-DATESTR_FMT = "%Y%m%d"
-DEFAULT_AGO_DAYS = 7
+from pfscrap.settings.constants import DATESTR_FMT, DEFAULT_AGO_DAYS
+
+DATESTR_FMT = DATESTR_FMT
+DEFAULT_AGO_DAYS = DEFAULT_AGO_DAYS
+
 
 def datetime2str(datetime, fmt=DATESTR_FMT):
     return datetime.strftime(fmt)
@@ -24,7 +27,7 @@ def get_ago_str_date(fmt=DATESTR_FMT, **kwargs):
     return str_ago
 
 
-def get_date_ago_range(start_date=None, end_date=None, days_ago=None, months_ago=None, years_ago=None, default_ago_days=DEFAULT_AGO_DAYS):
+def get_date_ago_range(start_date=None, end_date=None, days_ago=None, months_ago=None, years_ago=None, default_ago_days=DEFAULT_AGO_DAYS, **kwargs):
     end_date = end_date or get_today_str_date()
 
     if start_date:

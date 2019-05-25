@@ -16,13 +16,20 @@ from .payloaders import (
     get_fund_exso_payload,
     get_fund_exso_payload_by_date,
 )
-from .scrap_column_mappings import FUND_LIST_COLUMNS, FUND_DETAIL_COLUMNS, PRICE_PROGRESS_COLUMNS, SETTLE_EXSO_COLUMNS
+from .scrap_column_mappings import (
+    FUND_LIST_COLUMNS,
+    FUND_DETAIL_COLUMNS,
+    PRICE_PROGRESS_COLUMNS,
+    SETTLE_EXSO_COLUMNS,
+    SETTLE_EXSO_BY_DATE_COLUMNS,
+)
 from pfscrap.utils.soup_parser import parse_xml_table_tag
 
 
 class KofiaScraper(LinkRelayScraper):
     CACHE_NAME = 'PROFP_SCRAP_CACHE'
     REQUEST_DELAY = 0
+    RETRY_INTERVAL_SECONDS = 10, 100, 1000,
 
 
 class KofiaFundListScraper(KofiaScraper):
@@ -160,4 +167,14 @@ class KofiaSettleExSoByDateScraper(KofiaScraper):
     ]
 
     def fund_exso_by_date_payloader(self, start_date, end_date):
-        pass
+        payload = get_fund_exso_payload_by_date(start_date, end_date)
+        return payload
+
+    def fund_exso_by_date_parser(self, response, **kwargs):
+        soup = response.scrap.soup
+        exsos = parse_xml_table_tag(
+            soup, 'selectmeta',
+            many=True,
+            column_mapping=SETTLE_EXSO_BY_DATE_COLUMNS
+        )
+        return exsos
