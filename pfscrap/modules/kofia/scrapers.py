@@ -8,7 +8,14 @@ from datetime import datetime, timedelta
 
 from scrapgo import LinkRelayScraper, urlpattern, url, root
 
-from .payloaders import get_fund_list_payload, get_fund_detail_payload, get_fund_etc_payload, get_price_change_progress_payload, get_fund_exso_payload
+from .payloaders import (
+    get_fund_list_payload,
+    get_fund_detail_payload,
+    get_fund_etc_payload,
+    get_price_change_progress_payload,
+    get_fund_exso_payload,
+    get_fund_exso_payload_by_date,
+)
 from .scrap_column_mappings import FUND_LIST_COLUMNS, FUND_DETAIL_COLUMNS, PRICE_PROGRESS_COLUMNS, SETTLE_EXSO_COLUMNS
 from pfscrap.utils.soup_parser import parse_xml_table_tag
 
@@ -139,3 +146,18 @@ class KofiaSettleExSoScraper(KofiaScraper):
         for exso in exsos:
             exso['표준코드'] = fund_std_code
         return exsos
+
+
+class KofiaSettleExSoByDateScraper(KofiaScraper):
+    LINK_RELAY = [
+        url(
+            'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
+            payloader='fund_exso_by_date_payloader',
+            parser='fund_exso_by_date_parser',
+            refresh=True,
+            name='fund_exso_by_date',
+        ),
+    ]
+
+    def fund_exso_by_date_payloader(self, start_date, end_date):
+        pass

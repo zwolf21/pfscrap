@@ -115,3 +115,30 @@ def get_fund_exso_payload(fund_std_code, company_code):
         company_code=company_code
     )
     return payload
+
+
+def get_fund_exso_payload_by_date(start_date, end_date):
+    payload_template = \
+        '''<?xml version="1.0" encoding="utf-8"?>
+    <message>
+    <proframeHeader>
+        <pfmAppName>FS-DIS2</pfmAppName>
+        <pfmSvcName>DISFundRdmpSO</pfmSvcName>
+        <pfmFnName>select</pfmFnName>
+    </proframeHeader>
+    <systemHeader></systemHeader>
+        <DISCondFuncDTO>
+        <tmpV30>{start_date}</tmpV30>
+        <tmpV31>{end_date}</tmpV31>
+        <tmpV12></tmpV12>
+        <tmpV3></tmpV3>
+        <tmpV5></tmpV5>
+        <tmpV4></tmpV4>
+        <tmpV7></tmpV7>
+    </DISCondFuncDTO>
+    </message>'''
+    payload = payload_template.format(
+        start_date=start_date,
+        end_date=end_date
+    )
+    return payload

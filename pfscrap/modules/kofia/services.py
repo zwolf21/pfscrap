@@ -93,9 +93,6 @@ def get_kofia_fund_price_progress_by_fund_list(df_fund_list, initial_date=None, 
 def get_kofia_fund_settle_exso(fund_std_code, company_code=None, **kwargs):
     if company_code is None:
         company_code = ''
-        # fund_df = get_kofia_fund_detail(fund_std_code)
-        # fund = fund_df.iloc[0]
-        # company_code = fund['회사코드']
     kfexso = KofiaSettleExSoScraper()
     r = kfexso.scrap(fund_std_code=fund_std_code, company_code=company_code)
     records = r['fund_exso']
