@@ -7,9 +7,7 @@ from ..scrapers import (
     KofiaSettleExSoScraper,
     KofiaSettleExSoByDateScraper
 )
-from pfscrap.utils.date_str import gen_date_range
-
-DATERANGE_SLICE_INTERVAL_YEAR = 1
+from pfscrap.utils.date_str import slice_date_range
 
 
 def apply_fund_list(df_fund_list, apply, merge_on=None, initial_date=None):
@@ -35,9 +33,9 @@ def apply_fund_list(df_fund_list, apply, merge_on=None, initial_date=None):
     return df_apply
 
 
-def get_kofia_fund_list(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR, **kwargs):
+def get_kofia_fund_list(start_date, end_date, **kwargs):
     dfs = []
-    for start_date, end_date in gen_date_range(start_date, end_date, interval=interval):
+    for start_date, end_date in slice_date_range(start_date, end_date, by='year'):
         kflist = KofiaFundListScraper()
         r = kflist.scrap(start_date=start_date, end_date=end_date)
         df = pd.DataFrame(r['fund_list'])
@@ -104,9 +102,9 @@ def get_kofia_fund_settle_exso_by_fund_list(df_fund_list, **kwargs):
     return df_settle_exso
 
 
-def get_kofia_settle_exso_by_date(start_date, end_date, interval=DATERANGE_SLICE_INTERVAL_YEAR, **kwargs):
+def get_kofia_settle_exso_by_date(start_date, end_date, **kwargs):
     dfs = []
-    for start_date, end_date in gen_date_range(start_date, end_date, interval=interval):
+    for start_date, end_date in slice_date_range(start_date, end_date, by='month'):
         exso = KofiaSettleExSoByDateScraper()
         r = exso.scrap(start_date=start_date, end_date=end_date)
         df = pd.DataFrame(r['fund_exso_by_date'])

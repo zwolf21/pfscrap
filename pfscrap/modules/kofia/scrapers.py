@@ -27,9 +27,11 @@ from pfscrap.utils.soup_parser import parse_xml_table_tag
 
 
 class KofiaScraper(LinkRelayScraper):
+    # CACHE_BACKEND = 'redis'
     CACHE_NAME = 'PROFP_SCRAP_CACHE'
     REQUEST_DELAY = 0
     RETRY_INTERVAL_SECONDS = 10, 100, 1000,
+    # REQUEST_LOGGING = False
 
 
 class KofiaFundListScraper(KofiaScraper):
@@ -43,6 +45,8 @@ class KofiaFundListScraper(KofiaScraper):
     ]
 
     def fund_list_payloader(self, start_date, end_date):
+        log = f"Retrieve FundList by Date Range: {start_date}~{end_date}"
+        print(log)
         payload = get_fund_list_payload(start_date, end_date)
         yield payload
 
@@ -54,6 +58,7 @@ class KofiaFundListScraper(KofiaScraper):
 
 
 class KofiaFundInfoScraper(KofiaScraper):
+    # REQUEST_LOGGING = False
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
@@ -70,17 +75,19 @@ class KofiaFundInfoScraper(KofiaScraper):
     ]
 
     def fund_detail_payloader(self, fund_std_code):
+        log = f"Retrieve FundDetailInfo by FundCode: {fund_std_code}"
+        print(log)
         payload = get_fund_detail_payload(fund_std_code)
-        self.fund_std_code = fund_std_code
+        # self.fund_std_code = fund_std_code
         yield payload
 
-    def fund_detail_parser(self, response, **kwargs):
+    def fund_detail_parser(self, response, fund_std_code, **kwargs):
         soup = response.scrap.soup
         fund = parse_xml_table_tag(
             soup, 'comfundbasinfooutdto', FUND_DETAIL_COLUMNS,
             many=False
         )
-        fund['표준코드'] = self.fund_std_code
+        fund['표준코드'] = fund_std_code
         self.company_code = fund['회사코드']
         return fund
 
@@ -168,6 +175,8 @@ class KofiaSettleExSoByDateScraper(KofiaScraper):
 
     def fund_exso_by_date_payloader(self, start_date, end_date):
         payload = get_fund_exso_payload_by_date(start_date, end_date)
+        log = f"Retrieve Fund Exso by Date Range: {start_date}~{end_date}"
+        print(log)
         return payload
 
     def fund_exso_by_date_parser(self, response, **kwargs):
