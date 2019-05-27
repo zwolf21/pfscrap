@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 from pfscrap.utils.date_str import get_today_str_date
 from pfscrap.lib.orm import DBOrm
@@ -14,8 +15,9 @@ from .api import *
 
 def _print_db_progress(total_count, index, print_on=1000, prefix=""):
     if index % print_on == 0:
+        now = datetime.now()
         pct = round((index*100)/total_count, 2)
-        log = f"{prefix}{pct}%"
+        log = f"{prefix}{pct}%(완료시각: {now.strftime('%Y%m%d %H:%M:%S')})"
         print(log)
 
 
