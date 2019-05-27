@@ -6,11 +6,13 @@ from pfscrap.utils.date_str import get_date_ago_range
 
 from .services.api import (
     get_kofia_fund_list_detail,
-    get_kofia_settle_exso_by_date
+    get_kofia_settle_exso_by_date,
+    get_kofia_fund_price_progress,
 )
 from .services.db import (
     insert_db_table_kofia_fund_list,
-    insert_db_table_settle_exso_by_date
+    insert_db_table_settle_exso_by_date,
+    insert_db_table_kofia_price_progress,
 )
 
 
@@ -24,6 +26,7 @@ def pipe(api, output, outputer, *args, **kwargs):
     db_routes = {
         get_kofia_fund_list_detail: insert_db_table_kofia_fund_list,
         get_kofia_settle_exso_by_date: insert_db_table_settle_exso_by_date,
+        get_kofia_fund_price_progress: insert_db_table_kofia_price_progress,
     }
 
     # pipe 2 file

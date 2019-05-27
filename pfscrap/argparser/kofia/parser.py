@@ -10,6 +10,7 @@ from pfscrap.modules.kofia import (
     get_kofia_fund_list,
     get_kofia_fund_list_detail,
     get_kofia_settle_exso_by_date,
+    get_kofia_fund_price_progress
 )
 from pfscrap.modules.kofia.pipelines import pipe
 
@@ -26,6 +27,8 @@ def get_output_filename_generator(action, **kwargs):
         prefix = FUND_LIST_DETAIL_PREFIX
     elif action == 'ex':
         prefix = SETTLE_EXSO_PREFIX
+    elif action == 'pg':
+        prefix = PRICE_PROGRESS_POSTFIX
 
     def outputer(start_date, end_date, ext, **kwargs):
         output = f"{prefix}_{start_date}~{end_date}{ext}"
@@ -33,13 +36,13 @@ def get_output_filename_generator(action, **kwargs):
     return outputer
 
 
-def parse_kofia_args(action, start_date, end_date, output, **kwargs):
+def parse_kofia_args(action,  **kwargs):
     if action == 'ls':
         app = get_kofia_fund_list
     elif action == 'ls-al':
         app = get_kofia_fund_list_detail
     elif action == 'pg':
-        pass
+        app = get_kofia_fund_price_progress
     elif action == 'ex':
         app = get_kofia_settle_exso_by_date
     else:
@@ -48,8 +51,7 @@ def parse_kofia_args(action, start_date, end_date, output, **kwargs):
 
     piper = partial(
         pipe,
-        start_date=start_date,
-        end_date=end_date,
+        **kwargs
     )
     outputer = get_output_filename_generator(action, **kwargs)
-    piper(app, output, outputer)
+    piper(app, outputer=outputer, **kwargs)

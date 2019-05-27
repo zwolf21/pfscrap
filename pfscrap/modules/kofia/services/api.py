@@ -7,6 +7,10 @@ from ..scrapers import (
     KofiaSettleExSoScraper,
     KofiaSettleExSoByDateScraper
 )
+
+from ..constants import (
+    FIRST_INITIAL_DATE
+)
 from pfscrap.utils.date_str import slice_date_range
 
 
@@ -61,14 +65,9 @@ def get_kofia_fund_list_detail(start_date, end_date, **kwargs):
     return df_fund_list_detail
 
 
-def get_kofia_fund_price_progress(fund_std_code, company_code=None, initial_date=None, **kwargs):
+def get_kofia_fund_price_progress(fund_std_code, company_code=None, initial_date=FIRST_INITIAL_DATE, **kwargs):
     if company_code is None:
         company_code = ''
-    if initial_date is None:
-        fund_df = get_kofia_fund_detail(fund_std_code)
-        fund = fund_df.iloc[0]
-        initial_date = fund['설정일']
-
     fkprg = KofiaPriceProgressScraper()
     r = fkprg.scrap(
         fund_std_code=fund_std_code,

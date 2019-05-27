@@ -47,12 +47,14 @@ RW_FUNDINFO = {
 RW_FUNDINDEX = {
     '표준코드': 'forgcode',
     '기준일자': 'standarddt',
-    '기준가격': 'standardcot',
+    # '기준가격': 'standardcot', # DB와 안맞아서 아래 거로 바꿈
+    '기준가격': 'standardassstdcot',
     '전일대비등락': 'vbefdayfltstdcot',
     '과표기준가격': 'standardassstdcot',
     '설정원본': 'uoriginalamt',
     'KOSPI': 'kospiepn',
-    'KOSPI200': 'kospi200epn',
+    # 'KOSPI200': 'kospi200epn',
+    'KOSPI200': 'kospiepn',  # DB와 안맞아서 아래 거로 바꿈
     'KOSDAQ': 'kosdaqepn',
     '국공채(3년만기)': 'tbondbnd3y',
     '회사채(3년만기)': 'companybnd3y',

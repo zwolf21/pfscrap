@@ -5,6 +5,17 @@ def set_argparser(argparser):
         nargs='+'
     )
     argparser.add_argument(
+        '-fcd', '--fund_std_code',
+        help='펀드표준코드',
+        # nargs='?',
+    )
+    argparser.add_argument(
+        '-ini', '--initial_date',
+        help='연관정보 조회 시작일',
+        nargs='*',
+        type=str,
+    )
+    argparser.add_argument(
         '-sd', '--start_date',
         help='펀드설정일 시작일자',
         type=str
@@ -39,7 +50,6 @@ def set_argparser(argparser):
     argparser.add_argument(
         '-i', '--insert',
         help='MySQL DB connection 정보 들어있는 파일지정',
-        nargs ='?',
+        nargs='?',
         type=str
     )
-

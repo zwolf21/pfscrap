@@ -10,11 +10,10 @@ def route(args):
         raise ValueError(error_message)
 
     app_name, action = keywords
+    kwargs = {k: v for k, v in args._get_kwargs() if v is not None}
 
     if app_name == 'kofia':
         parse_kofia_args(
             action,
-            start_date=args.start_date,
-            end_date=args.end_date,
-            output=args.output
+            **kwargs
         )

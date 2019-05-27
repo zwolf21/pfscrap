@@ -107,6 +107,7 @@ class KofiaFundInfoScraper(KofiaScraper):
 
 
 class KofiaPriceProgressScraper(KofiaScraper):
+    CACHE_NAME = 'PROFP_SCRAP_CACHE_PRICE_PROGRESS'
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
