@@ -47,7 +47,7 @@ def set_argparser(argparser):
         type=str,
     )
     argparser.add_argument(
-        '-conn', '--path_connect_info_jsonfile',
+        '-conn', '--db_conf_path',
         help='MySQL DB connection 정보 들어있는 파일지정',
         type=str
     )

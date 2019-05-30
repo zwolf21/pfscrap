@@ -25,3 +25,4 @@ im/
 *.conf
 settings/
 PROFP_DATABASE_CONNECTION_INFO.csv
+*.bak
