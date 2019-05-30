@@ -1,7 +1,7 @@
 # DB INSERT 용 컬럼 매핑
 
 # RW_FUNDINFO TABLE
-RW_FUNDINFO = {
+펀드정보테이블컬럼매핑 = {
     '표준코드': "forgcode",
     '회사': "fmngcomcd",
     '펀드명': "fundnm",
@@ -44,7 +44,8 @@ RW_FUNDINFO = {
     'updated': "mod_date",
 }
 
-RW_FUNDINDEX = {
+
+지수테이블컬럼매핑 = {
     '표준코드': 'forgcode',
     '기준일자': 'standarddt',
     '기준가격': 'standardcot',  # DB와 안맞아서 아래 거로 바꿈
@@ -53,8 +54,8 @@ RW_FUNDINDEX = {
     '과표기준가격': 'standardassstdcot',
     '설정원본': 'uoriginalamt',
     'KOSPI': 'kospiepn',
-    'KOSPI200': 'kospi200epn',
-    'KOSPI200': 'kospiepn',  # DB와 안맞아서 아래 거로 바꿈
+    'KOSPI200': 'kospi20epn',
+    # 'KOSPI200': 'kospiepn',  # DB와 안맞아서 아래 거로 바꿈
     'KOSDAQ': 'kosdaqepn',
     '국공채(3년만기)': 'tbondbnd3y',
     '회사채(3년만기)': 'companybnd3y',
@@ -62,7 +63,7 @@ RW_FUNDINDEX = {
     'updated': "mod_date",
 }
 
-RW_FUNDSETTLE = {
+DBMAP_RW_FUNDSETTLE = {
     '표준코드': 'forgcode',
     '신탁회계기초': 'trustaccsrt',
     '신탁회계기말': 'trustaccend',
@@ -75,7 +76,7 @@ RW_FUNDSETTLE = {
     'updated': "mod_date",
 }
 
-RW_FUNDSETTLE_BY_DATE = {
+결산테이블컬럼매핑 = {
     '표준코드': 'forgcode',
     # '회사': "fmngcomcd",
     # '펀드명': "fundnm",
@@ -90,3 +91,28 @@ RW_FUNDSETTLE_BY_DATE = {
     'created': "reg_date",
     'updated': "mod_date",
 }
+
+## 자주쓰는 DB 테이블 접근 변수
+
+펀드정보테이블명 = 'RW_FUNDINFO'
+지수테이블명 = 'RW_FUNDINDEX'
+결산테이블명 = 'RW_FUNDSETTLE'
+
+
+표준코드 = 펀드정보테이블컬럼매핑['표준코드']
+회사코드 = 펀드정보테이블컬럼매핑['회사코드']
+설정일 = 펀드정보테이블컬럼매핑['설정일']
+스크랩여부 = 펀드정보테이블컬럼매핑['스크랩여부']
+펀드명 = 펀드정보테이블컬럼매핑['펀드명']
+상환여부 = 펀드정보테이블컬럼매핑['상환여부']
+표준코드 = 펀드정보테이블컬럼매핑['표준코드']
+
+기준일자 = 지수테이블컬럼매핑['기준일자']
+
+회계기말 = 결산테이블컬럼매핑['회계기말']
+구분 = 결산테이블컬럼매핑['구분']
+
+
+펀드정보테이블기준키 = [표준코드]
+지수테이블기준키 = [표준코드, 기준일자]
+결산테이블기준키 = [회계기말, 표준코드, 구분]

@@ -44,12 +44,10 @@ def set_argparser(argparser):
         '-o', '--output',
         help='결과물 출력파일 형식지정("csv", "xlsx", Path of the DB Connection info file)',
         nargs='?',
-        default='print',
         type=str,
     )
     argparser.add_argument(
-        '-i', '--insert',
+        '-conn', '--path_connect_info_jsonfile',
         help='MySQL DB connection 정보 들어있는 파일지정',
-        nargs='?',
         type=str
     )

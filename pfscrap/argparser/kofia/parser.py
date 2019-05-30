@@ -6,18 +6,25 @@ import pandas as pd
 from pfscrap.utils.dataframe import path2df
 from pfscrap.utils.files import is_file, read_json
 
-from pfscrap.modules.kofia import (
-    get_kofia_fund_list,
-    get_kofia_fund_list_detail,
-    get_kofia_settle_exso_by_date,
-    get_kofia_fund_price_progress
+# from pfscrap.modules.kofia import (
+#     get_kofia_fund_list,
+#     get_kofia_fund_list_detail,
+#     get_kofia_settle_exso_by_date,
+#     get_kofia_fund_price_progress
+# )
+from pfscrap.modules.kofia2 import (
+    pipe,
+    get_kofia_fundlist,
+    get_kofia_fund_detail_list,
+    get_kofia_price_progress,
+    get_kofia_settle_exso_list
 )
-from pfscrap.modules.kofia.pipelines import pipe
+# from pfscrap.modules.kofia.pipelines import pipe
 
-FUND_LIST_PREFIX = 'FundList'
-FUND_LIST_DETAIL_PREFIX = 'FundListDetail'
-PRICE_PROGRESS_POSTFIX = 'FundPriceProgress'
-SETTLE_EXSO_PREFIX = 'FundSettleExSo'
+# FUND_LIST_PREFIX = 'FundList'
+# FUND_LIST_DETAIL_PREFIX = 'FundListDetail'
+# PRICE_PROGRESS_POSTFIX = 'FundPriceProgress'
+# SETTLE_EXSO_PREFIX = 'FundSettleExSo'
 
 
 def get_output_filename_generator(action, **kwargs):
@@ -38,20 +45,15 @@ def get_output_filename_generator(action, **kwargs):
 
 def parse_kofia_args(action,  **kwargs):
     if action == 'ls':
-        app = get_kofia_fund_list
+        app = get_kofia_fundlist
     elif action == 'ls-al':
-        app = get_kofia_fund_list_detail
+        app = get_kofia_fund_detail_list
     elif action == 'pg':
-        app = get_kofia_fund_price_progress
+        app = get_kofia_price_progress
     elif action == 'ex':
-        app = get_kofia_settle_exso_by_date
+        app = get_kofia_settle_exso_list
     else:
         error_message = ">>python pfscrap kofia [ls, ls-al, pg, ex]!"
         print(error_message)
 
-    piper = partial(
-        pipe,
-        **kwargs
-    )
-    outputer = get_output_filename_generator(action, **kwargs)
-    piper(app, outputer=outputer, **kwargs)
+    pipe(app, **kwargs)
