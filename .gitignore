@@ -22,5 +22,6 @@ im/
 *.xls*
 *.ipynb
 *.json
+*.conf
 settings/
 PROFP_DATABASE_CONNECTION_INFO.csv

@@ -64,9 +64,7 @@ def pipe(app, **kwargs):
         )
         if not meta.table:
             raise ValueError("DB 로 Insert 할 테이블명이 설정 되지않았 습니다.")
-        for dataframe in df:
-            if dataframe is None:
-                continue
+        for dataframe in filter(None, df):
             db.insert(
                 dataframe, meta.table, meta.uniques, meta.mapping
             )

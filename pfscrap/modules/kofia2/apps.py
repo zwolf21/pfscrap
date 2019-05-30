@@ -48,10 +48,10 @@ def get_kofia_fund_detail_list(**kwargs):
         etc = pd.DataFrame(r['fund_etc'])
         df = pd.merge(detail, etc, on='표준코드')
         details.append(df)
-    if not details:
-        return
-    detail = pd.concat(details, ignore_index=True)
-    return pd.merge(fund_list, detail, on='표준코드')
+    if details:
+        detail = pd.concat(details, ignore_index=True)
+        return pd.merge(fund_list, detail, on='표준코드')
+    return fund_list
 
 
 @connect_db
