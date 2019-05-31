@@ -1,3 +1,3 @@
 import sys
 
-sys.path.append('../../pfscrap')
+sys.path.append('../pfscrap')
