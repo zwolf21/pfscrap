@@ -14,8 +14,6 @@ pip-selfcheck.json
 /dist
 /*.egg-info
 /media
-im/
-/test
 *.exe
 *.log
 *.csv
@@ -23,6 +21,5 @@ im/
 *.ipynb
 *.json
 *.conf
-settings/
-PROFP_DATABASE_CONNECTION_INFO.csv
+*.csv
 *.bak

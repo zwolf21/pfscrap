@@ -1,0 +1,4 @@
+
+# date
+DATESTR_FMT = "%Y%m%d"
+DEFAULT_AGO_DAYS = 7
