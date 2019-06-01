@@ -7,6 +7,7 @@ from urllib.parse import unquote
 from datetime import datetime, timedelta
 
 from scrapgo import LinkRelayScraper, urlpattern, url, root
+from pfscrap.settings.environments import BASE_DIR
 
 from .payloaders import (
     get_fund_list_payload,
@@ -25,16 +26,15 @@ from .scrap_mappings import (
 )
 
 
-
 class KofiaScraper(LinkRelayScraper):
     CACHE_NAME = 'PROFP_SCRAP_CACHE'
     REQUEST_DELAY = 0
     RETRY_INTERVAL_SECONDS = 10, 100, 1000,
-    # REQUEST_LOGGING = 
+    # REQUEST_LOGGING =
 
 
 class KofiaFundListScraper(KofiaScraper):
-    CACHE_NAME = 'PROFP_KOFIA_FUNDLIST_CACHE'
+    CACHE_NAME = os.path.join(BASE_DIR, 'PROFP_KOFIA_FUNDLIST_CACHE')
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
@@ -43,12 +43,13 @@ class KofiaFundListScraper(KofiaScraper):
             name='fund_list'
         )
     ]
+
     def get_request_log(self, *args, **kwargs):
         # print('get_request_log:', kwargs)
         log = super().get_request_log(*args, **kwargs)
-        return "FUND_LIST: {log} {start_date}~{end_date}".format(log=log,**kwargs)
+        return "FUND_LIST: {log} {start_date}~{end_date}".format(log=log, **kwargs)
 
-    def fund_list_payloader(self,**kwargs):
+    def fund_list_payloader(self, **kwargs):
         # log = f"Retrieve FundList by Date Range: {start_date}~{end_date}"
         # print(log)
         payload = get_fund_list_payload(**kwargs)
@@ -56,14 +57,13 @@ class KofiaFundListScraper(KofiaScraper):
 
     def fund_list_parser(self, response, **kwargs):
         soup = response.scrap.soup
-        fund_list = self.parse_xml_table_tag(soup, 'selectmeta', SCRAPMAP_FUND_LIST_COLUMNS)
+        fund_list = self.parse_xml_table_tag(
+            soup, 'selectmeta', SCRAPMAP_FUND_LIST_COLUMNS)
         return fund_list
-    
-
 
 
 class KofiaFundInfoScraper(KofiaScraper):
-    # REQUEST_LOGGING = False
+    CACHE_NAME = os.path.join(BASE_DIR, 'PROFP_KOFIA_FUNDLIST_CACHE')
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
@@ -114,7 +114,7 @@ class KofiaFundInfoScraper(KofiaScraper):
 
 
 class KofiaPriceProgressScraper(KofiaScraper):
-    CACHE_NAME = 'PROFP_KOFIA_PRICE_PROGRESS_CACHE'
+    CACHE_NAME = os.path.join(BASE_DIR, 'PROFP_KOFIA_FUNDINDEX_CACHE')
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
@@ -144,7 +144,7 @@ class KofiaPriceProgressScraper(KofiaScraper):
 
 
 class KofiaSettleExSoScraper(KofiaScraper):
-    CACHE_NAME = 'PROFP_KOFIA_SETTLE_EXSO_CACHE'
+    CACHE_NAME = os.path.join(BASE_DIR, 'PROFP_KOFIA_FUNDSETTLE_CACHE')
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
@@ -169,7 +169,7 @@ class KofiaSettleExSoScraper(KofiaScraper):
 
 
 class KofiaSettleExSoByDateScraper(KofiaScraper):
-    CACHE_NAME = 'PROFP_KOFIA_SETTLE_EXSO_CACHE'
+    CACHE_NAME = os.path.join(BASE_DIR, 'PROFP_KOFIA_FUNDSETTLE_CACHE')
     LINK_RELAY = [
         url(
             'http://dis.kofia.or.kr/proframeWeb/XMLSERVICES/',
